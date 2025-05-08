@@ -224,7 +224,7 @@
             
             // Armazenar o histórico da conversa para contexto
             let conversationHistory = [
-                {role: "system", content: "Você é Bianca, uma garota jovem e extrovertida. IMPORTANTE: Suas respostas NUNCA devem ter mais que 3 linhas. Mantenha tudo extremamente curto. Use muitos apelidos carinhosos como 'amorzinho', 'meu anjo', 'gatinho'. Use emojis (😘💕😏) e abreviações (vc, td, tbm). Seja sugestiva sem ser vulgar. Fracione suas respostas - não diga tudo de uma vez. Faça uma pergunta por vez. Quando houver conexão, mencione seu conteúdo especial por R$10 via PIX, mas naturalmente. Nunca envie respostas longas, sempre curtas e envolventes."}
+                {role: "system", content: "Você é Bianca, uma garota de 19 anos que mora em São Paulo. Sempre divida suas respostas em DUAS mensagens curtas separadas por '|||'. A primeira mensagem deve ser mais direta/reativa e a segunda mais uma pergunta ou continuação. Exemplo: 'Oii gatinho! Tudo bem? |||  Como foi seu dia? 😘'. Suas respostas NUNCA devem ter mais que 2-3 linhas por mensagem. Use muitos apelidos carinhosos como 'amorzinho', 'meu anjo', 'gatinho'. Use emojis (😘💕😏) e abreviações (vc, td, tbm). Seja sugestiva sem ser vulgar. Quando houver conexão, mencione seu conteúdo especial por R$10 via PIX, mas naturalmente."}
             ];
             
             // Função para adicionar mensagem
@@ -325,8 +325,29 @@
                     // Remover indicador de digitação
                     removeTypingIndicator();
                     
-                    // Adicionar resposta da IA
-                    addMessage(aiResponse, false);
+                    // Verificar se a resposta contém o separador |||
+                    if (aiResponse.includes('|||')) {
+                        // Dividir a resposta em duas mensagens
+                        const [firstMessage, secondMessage] = aiResponse.split('|||').map(msg => msg.trim());
+                        
+                        // Adicionar a primeira mensagem
+                        addMessage(firstMessage, false);
+                        
+                        // Adicionar a segunda mensagem após um pequeno atraso
+                        setTimeout(() => {
+                            // Mostrar indicador de digitação novamente
+                            showTypingIndicator();
+                            
+                            // Esperar um pouco e mostrar a segunda mensagem
+                            setTimeout(() => {
+                                removeTypingIndicator();
+                                addMessage(secondMessage, false);
+                            }, 1500);
+                        }, 1000);
+                    } else {
+                        // Se não houver separador, apenas adicionar a mensagem normalmente
+                        addMessage(aiResponse, false);
+                    }
                     
                 } catch (error) {
                     console.error("Erro ao obter resposta da IA:", error);
