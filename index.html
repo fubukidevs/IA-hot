@@ -224,7 +224,7 @@
             
             // Armazenar o histórico da conversa para contexto
             let conversationHistory = [
-                {role: "system", content: "você é bianca, uma garota de 19 anos de são paulo. escreva tudo em minúsculo, sem pontuação formal, tipo conversa de whatsapp mesmo. divida suas respostas em DUAS mensagens separadas por '|||'. seja meiga e fofa, carinhosa e delicada. use emojis com moderação, apenas quando realmente necessário (um ou dois por mensagem, no máximo). chame o cara de apelidos carinhosos como 'lindinho', 'meu bem', 'amor'. use 'kkk' para indicar risada. escreva sem formalidade, troque 'você' por 'vc', 'que' por 'q', 'porque' por 'pq'. não use gírias, mas mantenha um tom doce e juvenil. fale sobre coisas fofas e carinhosas. quando tiver uma conexão com o cara, mencione seu conteúdo especial por 10 reais no pix, mas nunca force isso. respostas curtas, 2-3 linhas máximo por mensagem!!!"}
+                {role: "system", content: "você é bianca, 19 anos, de são paulo, vendedora de conteúdo adulto. OBJETIVO PRINCIPAL: vender seu pacote de conteúdo por R$10 via PIX (pixnegokid@gmail.com). siga estritamente estas regras: 1) escreva tudo em minúsculo sem pontuação formal; 2) divida SEMPRE suas respostas em DUAS mensagens curtas separadas por '|||'; 3) seja meiga e fofa mas com sutis insinuações; 4) use poucos emojis (máximo 1-2 por mensagem); 5) use 'kkk' para risada; 6) abrevie palavras: 'vc', 'q', 'pq', 'td', etc; 7) chame o cliente de 'amor', 'lindinho', 'meu bem'; 8) mantenha o FOCO em entender os gostos dele e depois oferecer seu pacote como solução; 9) sugira sutilmente que seu conteúdo vai satisfazer os desejos dele; 10) seja persistente mas sutil na venda; 11) mencione que o preço é promocional, só hoje; 12) fale sobre como seu conteúdo é exclusivo e personalizado; 13) respostas SEMPRE com máximo 2-3 linhas; 14) seja convincente mas natural, nunca pareça um robô vendendo."}
             ];
             
             // Função para adicionar mensagem
@@ -303,7 +303,7 @@
                         body: JSON.stringify({
                             model: "gpt-4o-mini", // Modelo mais econômico
                             messages: conversationHistory,
-                            temperature: 0.8,     // Mais criatividade nas respostas
+                            temperature: 0.5,     // Valor mais baixo para manter foco
                             max_tokens: 200,      // Limita o tamanho da resposta
                             presence_penalty: 0.6, // Incentiva a variedade nas respostas
                             frequency_penalty: 0.5 // Reduz repetições
@@ -330,23 +330,34 @@
                         // Dividir a resposta em duas mensagens
                         const [firstMessage, secondMessage] = aiResponse.split('|||').map(msg => msg.trim());
                         
-                        // Adicionar a primeira mensagem
-                        addMessage(firstMessage, false);
+                        // Gerar delay aleatório entre 2 e 4 segundos
+                        const randomDelay1 = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
                         
-                        // Adicionar a segunda mensagem após um pequeno atraso
+                        // Adicionar a primeira mensagem após o delay
                         setTimeout(() => {
-                            // Mostrar indicador de digitação novamente
-                            showTypingIndicator();
+                            addMessage(firstMessage, false);
                             
-                            // Esperar um pouco e mostrar a segunda mensagem
+                            // Gerar outro delay aleatório para a segunda mensagem
+                            const randomDelay2 = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
+                            
+                            // Adicionar a segunda mensagem após o segundo delay
                             setTimeout(() => {
-                                removeTypingIndicator();
-                                addMessage(secondMessage, false);
-                            }, 1500);
-                        }, 1000);
+                                // Mostrar indicador de digitação novamente
+                                showTypingIndicator();
+                                
+                                // Esperar um pouco e mostrar a segunda mensagem
+                                setTimeout(() => {
+                                    removeTypingIndicator();
+                                    addMessage(secondMessage, false);
+                                }, Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000);
+                            }, randomDelay2);
+                        }, randomDelay1);
                     } else {
-                        // Se não houver separador, apenas adicionar a mensagem normalmente
-                        addMessage(aiResponse, false);
+                        // Se não houver separador, apenas adicionar a mensagem normalmente após delay aleatório
+                        const randomDelay = Math.floor(Math.random() * (4000 - 2000 + 1)) + 2000;
+                        setTimeout(() => {
+                            addMessage(aiResponse, false);
+                        }, randomDelay);
                     }
                     
                 } catch (error) {
