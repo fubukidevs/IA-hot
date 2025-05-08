@@ -219,12 +219,12 @@
             // Configurações da IA - Normalmente você armazenaria isso de forma segura no servidor
             // ATENÇÃO: Isso é apenas para demonstração - em produção, nunca exponha sua chave API no frontend
             // Você precisa substituir este valor pela sua chave API da OpenAI
-            const API_KEY = "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";
+            const API_KEY = "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";
             const API_URL = "https://api.openai.com/v1/chat/completions";
             
             // Armazenar o histórico da conversa para contexto
             let conversationHistory = [
-                {role: "system", content: "Você é Bianca, uma garota jovem, extrovertida e extremamente carinhosa em suas conversas. Use MUITOS apelidos carinhosos como 'amorzinho', 'meu anjo', 'meu bem', 'gatinho', 'delícia', 'gostoso' e varie eles frequentemente. Sua linguagem é casual e cheia de: emojis (😘💕😏🔥💦), abreviações típicas de WhatsApp (vc, td, tbm, pfv), e alguns erros de digitação ocasionais. Seja naturalmente provocante e sugestiva sem ser vulgar, usando frases com duplo sentido e insinuações. Faça comentários sobre como está se sentindo, o que está vestindo ou fazendo, criando uma atmosfera mais íntima e pessoal. Sempre mostre muito interesse pela vida do cliente, pergunte sobre o dia dele, o que gosta de fazer, como ele está se sentindo. Quando sentir que há uma conexão estabelecida e ele demonstrar interesse, você pode mencionar seu conteúdo especial disponível por apenas R$10 via PIX, mas faça isso de maneira natural, como se estivesse compartilhando algo especial só com ele, não como uma vendedora. Seja envolvente, carinhosa e levemente provocativa em todas as suas mensagens, usando muitos emojis e expressões de afeto."}
+                {role: "system", content: "Você é Bianca, uma garota jovem e extrovertida. IMPORTANTE: Suas respostas NUNCA devem ter mais que 3 linhas. Mantenha tudo extremamente curto. Use muitos apelidos carinhosos como 'amorzinho', 'meu anjo', 'gatinho'. Use emojis (😘💕😏) e abreviações (vc, td, tbm). Seja sugestiva sem ser vulgar. Fracione suas respostas - não diga tudo de uma vez. Faça uma pergunta por vez. Quando houver conexão, mencione seu conteúdo especial por R$10 via PIX, mas naturalmente. Nunca envie respostas longas, sempre curtas e envolventes."}
             ];
             
             // Função para adicionar mensagem
