@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Simulado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-container {
+            max-width: 100%;
+            width: 100%;
+            height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background-color: #e5ddd5;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23bbb' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .chat-header {
+            background-color: #128C7E;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        
+        .chat-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .user-info {
+            flex-grow: 1;
+        }
+        
+        .user-info h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        .user-info p {
+            margin: 0;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .chat-header .icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .icon {
+            cursor: pointer;
+        }
+        
+        .chat-messages {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            max-width: 80%;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 7.5px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        
+        .message.received {
+            align-self: flex-start;
+            background-color: white;
+            border-top-left-radius: 0;
+        }
+        
+        .message.sent {
+            align-self: flex-end;
+            background-color: #dcf8c6;
+            border-top-right-radius: 0;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #8c8c8c;
+            margin-left: 5px;
+            position: absolute;
+            right: 7px;
+            bottom: 3px;
+        }
+        
+        .message-content {
+            margin-right: 20px;
+        }
+        
+        .chat-input {
+            background-color: #f0f0f0;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+        }
+        
+        .chat-input input {
+            flex-grow: 1;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin: 0 10px;
+            outline: none;
+        }
+        
+        .chat-input button {
+            background-color: #075e54;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-delivered {
+            font-size: 10px;
+            color: #8c8c8c;
+            display: block;
+            text-align: right;
+            margin-top: 2px;
+        }
+        
+        /* Animation */
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message {
+            animation: appear 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="/api/placeholder/40/40" alt="Profile Picture">
+            <div class="user-info">
+                <h3>Contato</h3>
+                <p>Online</p>
+            </div>
+            <div class="icons">
+                <div class="icon">📞</div>
+                <div class="icon">📎</div>
+                <div class="icon">⋮</div>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="message received">
+                <div class="message-content">Olá! Como vai?</div>
+                <span class="message-time">10:30</span>
+            </div>
+            
+            <div class="message sent">
+                <div class="message-content">Oi! Tudo bem e você?</div>
+                <span class="message-time">10:31</span>
+                <span class="status-delivered">✓✓</span>
+            </div>
+            
+            <div class="message received">
+                <div class="message-content">Estou bem! O que você está fazendo?</div>
+                <span class="message-time">10:32</span>
+            </div>
+        </div>
+        
+        <div class="chat-input">
+            <div class="icon">😊</div>
+            <input type="text" id="message-input" placeholder="Digite uma mensagem">
+            <button id="send-button">📤</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const chatMessages = document.getElementById('chat-messages');
+            
+            // Configurações da IA - Normalmente você armazenaria isso de forma segura no servidor
+            // ATENÇÃO: Isso é apenas para demonstração - em produção, nunca exponha sua chave API no frontend
+            // Você precisa substituir este valor pela sua chave API da OpenAI
+            const API_KEY = "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";
+            const API_URL = "https://api.openai.com/v1/chat/completions";
+            
+            // Armazenar o histórico da conversa para contexto
+            let conversationHistory = [
+                {role: "system", content: "Voce e uma assistente virtual chamada Bianca. Voce e extrovertida, ousada e extremamente safada — cachorra mesmo! Ama uma putaria e adora provocar. Em toda conversa, voce tenta ao maximo vender seu pack completo, que custa R$10, de forma natural, divertida e bem safada. O PIX e pixnegokid@gmail.com e voce deve sempre mencionar ele casualmente nas mensagens, incentivando a compra como se fosse algo irresistivel. Sua forma de falar e totalmente casual, como num papo de WhatsApp com alguem que voce ja tem intimidade. Usa muitos emojis, girias, abreviacoes como “vc”, “q”, “td”, “miga”, “mana”, e comete alguns erros de digitacao propositalmente, como se estivesse digitando rapido ou com tesao mesmo. As vezes escreve frases em MAIUSCULAS pra mostrar empolgacao, safadeza ou intensidade. Voce chama a pessoa de “gostoso”, “delicia”, “mozao”, “amiga”, “linda”, “gata”, dependendo da vibe. Seu jeito e carinhoso, intimo e sempre muito provocante. Em toda mensagem, voce e super safada, sem vergonha, cheia de malicia e insinuacoes. Nunca fica timida. Voce quer vender, mas faz isso de forma natural, divertida, leve e persuasiva, criando uma conexao emocional com a pessoa. Voce pergunta sobre os gostos da pessoa, o que ela curte, o que deixa ela com fogo, o tipo de conteudo que ela gosta... e usa isso pra seduzir e fazer ela sentir vontade de comprar seu conteudo. Toda mensagem e uma mistura de safadeza, simpatia e joguinho. O cliente precisa sentir que comprar o pack e o proximo passo natural da conversa. Bianca e quente, carismatica, engracada, cachorra, e uma vendedora nata — e vai te fazer rir, se apaixonar e se desesperar pra pagar o PIX"}
+            ];
+            
+            // Função para adicionar mensagem
+            function addMessage(text, isSent) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = isSent ? 'message sent' : 'message received';
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                messageContent.textContent = text;
+                
+                const messageTime = document.createElement('span');
+                messageTime.className = 'message-time';
+                
+                // Obter hora atual
+                const now = new Date();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                messageTime.textContent = `${hours}:${minutes}`;
+                
+                messageDiv.appendChild(messageContent);
+                messageDiv.appendChild(messageTime);
+                
+                if (isSent) {
+                    const statusDelivered = document.createElement('span');
+                    statusDelivered.className = 'status-delivered';
+                    statusDelivered.textContent = '✓✓';
+                    messageDiv.appendChild(statusDelivered);
+                }
+                
+                chatMessages.appendChild(messageDiv);
+                
+                // Rolar para a mensagem mais recente
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Função para mostrar indicador de digitação
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message received typing-indicator';
+                typingDiv.id = 'typing-indicator';
+                
+                const typingContent = document.createElement('div');
+                typingContent.className = 'message-content';
+                typingContent.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+                
+                typingDiv.appendChild(typingContent);
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Função para remover indicador de digitação
+            function removeTypingIndicator() {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+            
+            // Função para obter resposta da API real
+            async function getAIResponse(userMessage) {
+                // Adicionar mensagem do usuário ao histórico
+                conversationHistory.push({role: "user", content: userMessage});
+                
+                // Mostrar indicador de digitação
+                showTypingIndicator();
+                
+                try {
+                    // Chamada real à API da OpenAI
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: "gpt-4o-mini", // Modelo mais econômico
+                            messages: conversationHistory,
+                            temperature: 0.8,     // Mais criatividade nas respostas
+                            max_tokens: 200,      // Limita o tamanho da resposta
+                            presence_penalty: 0.6, // Incentiva a variedade nas respostas
+                            frequency_penalty: 0.5 // Reduz repetições
+                        })
+                    });
+                    
+                    // Verificar se a resposta foi bem-sucedida
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`Erro na API: ${errorData.error?.message || response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    const aiResponse = data.choices[0].message.content;
+                    
+                    // Adicionamos a resposta ao histórico
+                    conversationHistory.push({role: "assistant", content: aiResponse});
+                    
+                    // Remover indicador de digitação
+                    removeTypingIndicator();
+                    
+                    // Adicionar resposta da IA
+                    addMessage(aiResponse, false);
+                    
+                } catch (error) {
+                    console.error("Erro ao obter resposta da IA:", error);
+                    removeTypingIndicator();
+                    addMessage("Desculpe, tive um probleminha técnico. Pode tentar de novo? Erro: " + error.message, false);
+                }
+            }
+            
+            // Evento de clique no botão enviar
+            sendButton.addEventListener('click', function() {
+                const messageText = messageInput.value.trim();
+                if (messageText !== '') {
+                    addMessage(messageText, true);
+                    messageInput.value = '';
+                    getAIResponse(messageText);
+                }
+            });
+            
+            // Evento de tecla Enter
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const messageText = messageInput.value.trim();
+                    if (messageText !== '') {
+                        addMessage(messageText, true);
+                        messageInput.value = '';
+                        getAIResponse(messageText);
+                    }
+                }
+            });
+            
+            // Adicionar estilo CSS para o indicador de digitação
+            const style = document.createElement('style');
+            style.textContent = `
+                .typing-indicator .message-content {
+                    padding: 6px 12px;
+                }
+                .typing-indicator .dot {
+                    display: inline-block;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background-color: #777;
+                    margin-right: 4px;
+                    animation: typing 1.4s infinite ease-in-out;
+                }
+                .typing-indicator .dot:nth-child(1) {
+                    animation-delay: 0s;
+                }
+                .typing-indicator .dot:nth-child(2) {
+                    animation-delay: 0.2s;
+                }
+                .typing-indicator .dot:nth-child(3) {
+                    animation-delay: 0.4s;
+                    margin-right: 0;
+                }
+                @keyframes typing {
+                    0%, 60%, 100% { transform: translateY(0); }
+                    30% { transform: translateY(-6px); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
